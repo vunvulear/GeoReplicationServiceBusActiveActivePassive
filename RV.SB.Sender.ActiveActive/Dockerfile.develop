@@ -1,0 +1,15 @@
+FROM microsoft/dotnet:2.1-sdk
+ARG BUILD_CONFIGURATION=Debug
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+EXPOSE 80
+
+WORKDIR /src
+COPY ["RV.SB.Sender.ActiveActive/RV.SB.Sender.ActiveActive.csproj", "RV.SB.Sender.ActiveActive/"]
+
+RUN dotnet restore "RV.SB.Sender.ActiveActive/RV.SB.Sender.ActiveActive.csproj"
+COPY . .
+WORKDIR "/src/RV.SB.Sender.ActiveActive"
+RUN dotnet build --no-restore "RV.SB.Sender.ActiveActive.csproj" -c $BUILD_CONFIGURATION
+
+ENTRYPOINT ["dotnet", "run", "--no-build", "--no-launch-profile", "-c", "$BUILD_CONFIGURATION", "--"]
